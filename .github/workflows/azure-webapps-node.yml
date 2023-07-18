@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dropbox Image Gallery</title>
+  <style>
+    .image {
+      display: inline-block;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dropbox Image Gallery</h1>
+
+  <?php
+  $dropboxFolderPath = "https://www.dropbox.com/sh/ncizdsuwpjs5znw/AACQFe8zOzpIVCsfLas1oAD1a?dl=0";
+  $dropboxFolderURL = str_replace("www.dropbox.com", "dl.dropboxusercontent.com", $dropboxFolderPath);
+  $jsonURL = $dropboxFolderURL . "&raw=1&preview=1";
+
+  $json = file_get_contents($jsonURL);
+  $files = json_decode($json, true)["files"];
+
+  foreach ($files as $file) {
+    $thumbnailURL = $dropboxFolderURL . "/" . rawurlencode($file["name"]) . "?raw=1";
+    $imageURL = $dropboxFolderURL . "/" . rawurlencode($file["name"]) . "?dl=1";
+
+    echo '<div class="image">';
+    echo '<a href="' . $imageURL . '">';
+    echo '<img src="' . $thumbnailURL . '" alt="' . $file["name"] . '">';
+    echo '</a>';
+    echo '<p>' . $file["name"] . '</p>';
+    echo '</div>';
+  }
+  ?>
+
+</body>
+</html>
